@@ -47,7 +47,7 @@ namespace dbg_macro {
 
 #if defined(__unix__) || (defined(__APPLE__) && defined(__MACH__))
 inline bool isColorizedOutputEnabled() {
-  return isatty(fileno(stderr));
+  return isatty(fileno(stdin));
 }
 #else
 inline bool isColorizedOutputEnabled() {
@@ -452,7 +452,7 @@ class DebugOutput {
       output << " (" << ansi(ANSI_TYPE) << type << ansi(ANSI_RESET) << ")";
     }
     output << std::endl;
-    std::cerr << output.str();
+    std::cout << output.str();
 
     return std::forward<T>(value);
   }
@@ -504,7 +504,4 @@ T&& identity(T&& t) {
 
 #endif  // DBG_MACRO_DBG_H
 
-#define BEGIN int main () {
-#define END }
-
-BEGIN
+int main () {
