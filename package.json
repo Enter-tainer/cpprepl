@@ -1,0 +1,22 @@
+{
+  "name": "cpprepl",
+  "version": "1.0.0",
+  "description": "deadly simple repl for cpp",
+  "main": "index.js",
+  "dependencies": {
+    "yargs": "^14.2.0"
+  },
+  "devDependencies": {
+    "@types/jest": "^24.0.18",
+    "@types/yargs": "^13.0.3",
+    "jest": "^24.9.0",
+    "ts-jest": "^24.1.0",
+    "ts-node": "^8.4.1",
+    "typescript": "^3.6.4"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Margatroid",
+  "license": "MIT"
+}
