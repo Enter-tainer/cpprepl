@@ -2,7 +2,7 @@
 
 import yargs from 'yargs';
 import Compiler from './src/compiler'
-import { rl, print } from './src/io'
+import { read, print } from './src/io'
 
 const argv = yargs.options({
   'clang++': {
@@ -16,9 +16,18 @@ const argv = yargs.options({
 
 const cp = new Compiler('g++')
 
-rl.on('line', async (code) => {
-  const res = await cp.compile(code)
+async function solve(): Promise<void> {
+  const code: string = await read()
+  const res = await cp.processInput(code)
   print(res.output, false)
   const output = await cp.execute()
   print(output, false)
-})
+}
+
+async function qwq() {
+  while (1) {
+    await solve()
+  }
+}
+
+qwq()

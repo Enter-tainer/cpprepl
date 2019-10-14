@@ -104,9 +104,12 @@ template <typename T> std::string type_name() {
 inline std::string get_type_name(type_tag<std::string>) {
   return "std::string";
 }
-#define type_of(x)                                                             \
+#define value_of(x)                                                             \
   std::cout << (#x + std::string(" = ") + std::to_string(x) + std::string(" :: ") +         \
-   mgt::type_name<decltype(x)>()) << endl
+   mgt::type_name<decltype(x)>()) << std::endl
+
+#define type_of(x)\
+  std::cout << (#x + std::string(" :: ") + mgt::type_name<decltype(x)>()) << std::endl
 } // namespace mgt
 namespace std {
 std::string to_string(const string &s) { return '"' + s + '"'; }
@@ -123,4 +126,3 @@ template <typename T> std::string to_string(const vector<T> &vec) {
 }
 } // namespace std
 
-int main () {

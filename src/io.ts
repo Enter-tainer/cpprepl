@@ -1,14 +1,20 @@
-import * as readline from 'readline'
-
-let rl = readline.createInterface({
-  input: process.stdin,
-  output: process.stdout,
-  terminal: true,
-  prompt: '>>='
-})
+import prompts = require('prompts')
+import { stdout } from 'process'
 
 function print(str: string, newline: boolean = true) {
-  rl.write(str + (newline ? '\n' : ''))
+  stdout.write(str + (newline ? '\n' : ''))
 }
 
-export { print, rl }
+async function read(): Promise<string> {
+  let res = await (async () => {
+    const rep = await prompts({
+      type: 'text',
+      message: '>>=',
+      name: 'value'
+    })
+    return rep.value
+  })()
+  return res
+}
+
+export { print, read }

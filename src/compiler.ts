@@ -10,7 +10,7 @@ const writeFileA = promisify(writeFile)
 const copyFileA = promisify(copyFile)
 const accessA = promisify(access)
 
-interface compileResult {
+interface execResult {
   success: boolean,
   output: string
 }
@@ -18,26 +18,37 @@ interface compileResult {
 class Compiler {
   compiler: string
   code: Array<string>
+  includes: Array<string>
   constructor(compiler: string) {
     this.compiler = compiler
     this.code = []
+    this.includes = ['dbg.h']
     const headerpath = join(tmpdir(), 'dbg.h')
     copyFileSync(join('template', 'dbg.h'), headerpath)
   }
-  private static wrapCodeWithdbg(code: string): string {
+  private static wrapCodeWith(code: string, wrapper: string = 'value_of'): string {
     code = trim(code, ';')
-    return `type_of(${code});`
+    return `${wrapper}(${code});`
   }
+
+  private static wrapInclude(module: string): string {
+    return `#include "${module}"`
+  }
+
   private static addSemicolon(code: string): string {
     code = trim(code, ';')
     return `${code};`
   }
-  private static concatCode(code: Array<string>): string {
-    let res: string = ''
-    for (const i of code) {
-      res = res.concat(i);
+  private static concatCode(code: Array<string>, includes: Array<string>): string {
+    let resCode: string = ''
+    let resInclude: string = ''
+    for (const i of includes) {
+      resInclude = resInclude.concat(Compiler.wrapInclude(i)) + '\n'
     }
-    return `#include "dbg.h"\n${res}\n}`
+    for (const i of code) {
+      resCode = resCode.concat(i) + '\n';
+    }
+    return `${resInclude}\nint main () {\n${resCode}\n}`
   }
   private static async isExist(path: string): Promise<boolean> {
     try {
@@ -47,8 +58,8 @@ class Compiler {
       return false
     }
   }
-  private async basicCompile(code: Array<string>): Promise<compileResult> {
-    let resCode = Compiler.concatCode(code)
+  private async basicCompile(code: Array<string>, includes: Array<string>): Promise<execResult> {
+    let resCode = Compiler.concatCode(code, includes)
     const filepath = join(tmpdir(), 'repl.cxx')
     const headerpath = join(tmpdir(), 'dbg.h')
     const execPath = join(tmpdir(), 'a.out')
@@ -74,30 +85,76 @@ class Compiler {
     }
   }
 
-  async compile(code: string): Promise<compileResult> {
+  private static isCommand(code: string): boolean {
+    code = trim(code)
+    if (code === '')
+      return false
+    return code[0] === ':'
+  }
+
+  async processInput(line: string): Promise<execResult> {
+    return Compiler.isCommand(line) ? this.command(line) : this.compile(line)
+  }
+
+  async command(cmd: string): Promise<execResult> {
+    try {
+      const oprand: string = cmd.split(' ')[1]
+      switch (cmd.split(' ')[0]) {
+        case ':m':
+        case ':module':
+          const include: string = oprand
+          let tmpInclude = [...this.includes].push(oprand)
+          let compileRes = await this.basicCompile(this.code, this.includes)
+          if (compileRes.success) {
+            this.includes.push(oprand)
+          }
+          return { 
+            success: compileRes.success,
+            output: compileRes.success ? `Load ${oprand} success` : `Fail to load ${oprand}`
+          }
+        case ':t':
+        case ':type':
+          let tmp = [...this.code]
+          tmp.push(Compiler.wrapCodeWith(oprand, 'type_of'))
+          let r = await this.basicCompile(tmp, this.includes)
+          return r
+        case ':e':
+        case ':exit':
+          process.exit(0)
+      }
+    } catch (e) {
+      return {
+        success: false,
+        output: e.message
+      }
+    }
+    return {
+      success: false,
+      output: 'match command failed'
+    }
+  }
+
+  async compile(code: string): Promise<execResult> {
     code = Compiler.addSemicolon(code)
     let tmp = [...this.code]
-    tmp.push(Compiler.wrapCodeWithdbg(code))
-    const r = await this.basicCompile(tmp)
+    tmp.push(Compiler.wrapCodeWith(code))
+    let r = await this.basicCompile(tmp, this.includes)
     if (!r.success) {
       tmp.pop()
       tmp.push(code)
-      const t = await this.basicCompile(tmp)
-      if (!t.success) {
-        return t
-      } else {
+      r = await this.basicCompile(tmp, this.includes)
+      if (r.success) {
         this.code.push(code)
-        return t
       }
     } else {
-      this.code.push(Compiler.wrapCodeWithdbg(code))
-      return r
+      this.code.push(code)
     }
+    return r
   }
 
   async execute(): Promise<string> {
     const execPath = join(tmpdir(), 'a.out')
-    const res = await execA(execPath,{ shell: '/bin/bash', windowsHide: true })
+    const res = await execA(execPath, { shell: '/bin/bash', windowsHide: true })
     return res.stdout
   }
 }
