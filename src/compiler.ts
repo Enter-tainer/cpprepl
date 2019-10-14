@@ -1,7 +1,7 @@
 import { exec } from 'child_process'
 import { promisify } from 'util'
 import { tmpdir } from 'os'
-import { writeFile, copyFile, access } from 'fs'
+import { writeFile, copyFile, access, copyFileSync } from 'fs'
 import { join } from 'path'
 import { trim } from 'lodash'
 
@@ -21,10 +21,12 @@ class Compiler {
   constructor(compiler: string) {
     this.compiler = compiler
     this.code = []
+    const headerpath = join(tmpdir(), 'dbg.h')
+    copyFileSync(join('template', 'dbg.h'), headerpath)
   }
   private static wrapCodeWithdbg(code: string): string {
     code = trim(code, ';')
-    return `dbg(${code});`
+    return `type_of(${code});`
   }
   private static addSemicolon(code: string): string {
     code = trim(code, ';')
