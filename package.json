@@ -5,10 +5,8 @@
   "main": "index.js",
   "dependencies": {
     "@types/lodash": "^4.14.144",
-    "@types/prompts": "^2.0.1",
-    "fp-ts": "^2.1.0",
+    "enquirer": "^2.3.2",
     "lodash": "^4.17.15",
-    "prompts": "^2.2.1",
     "yargs": "^14.2.0"
   },
   "devDependencies": {
