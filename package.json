@@ -29,5 +29,9 @@
     "start": "ts-node ."
   },
   "author": "Margatroid",
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Enter-tainer/cpprepl"
+  }
 }

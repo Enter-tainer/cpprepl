@@ -110,7 +110,7 @@ class Compiler {
           }
           return { 
             success: compileRes.success,
-            output: compileRes.success ? `Load ${oprand} success` : `Fail to load ${oprand}`
+            output: compileRes.success ? `Load ${oprand} success\n` : `Fail to load ${oprand}\n`
           }
         case ':t':
         case ':type':
