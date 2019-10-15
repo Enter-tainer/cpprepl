@@ -1,8 +1,11 @@
 {
   "name": "cpprepl",
+  "bin": {
+    "cpprepl": "dist/index.js"
+  },
   "version": "1.0.0",
   "description": "deadly simple repl for cpp",
-  "main": "index.js",
+  "main": "dist/index.js",
   "dependencies": {
     "@types/lodash": "^4.14.144",
     "enquirer": "^2.3.2",
@@ -19,7 +22,10 @@
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc",
+    "postbuild": "cp -r template dist/",
+    "prepack": "npm run build"
   },
   "author": "Margatroid",
   "license": "MIT"
