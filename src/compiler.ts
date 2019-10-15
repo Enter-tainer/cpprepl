@@ -4,6 +4,7 @@ import { tmpdir } from 'os'
 import { writeFile, copyFile, access, copyFileSync } from 'fs'
 import { join } from 'path'
 import { trim } from 'lodash'
+import getLocalPath from './file'
 
 const execA = promisify(exec)
 const writeFileA = promisify(writeFile)
@@ -23,8 +24,6 @@ class Compiler {
     this.compiler = compiler
     this.code = []
     this.includes = ['dbg.h']
-    const headerpath = join(tmpdir(), 'dbg.h')
-    copyFileSync(join('template', 'dbg.h'), headerpath)
   }
   static wrapCodeWith(code: string, wrapper: string = 'value_of'): string {
     code = trim(code, ';')
@@ -68,9 +67,7 @@ class Compiler {
       stdout: string;
       stderr: string;
     }
-    if (!(await Compiler.isExist(headerpath))) {
-      await copyFileA(join('template', 'dbg.h'), headerpath)
-    }
+    await copyFileA(await getLocalPath(join('template', 'dbg.h')), headerpath)
     try {
       exec_res = await execA(`${this.compiler} ${filepath} -o ${execPath}`, { shell: '/bin/bash', windowsHide: true })
       return {
