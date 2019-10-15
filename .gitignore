@@ -103,3 +103,5 @@ public
 package-lock.json
 
 *.out
+
+dist/

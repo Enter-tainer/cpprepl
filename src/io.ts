@@ -1,5 +1,4 @@
 import { prompt } from 'enquirer'
-
 import { stdout } from 'process'
 
 function print(str: string, newline: boolean = true) {

@@ -16,7 +16,7 @@ const argv = yargs.options({
 
 const cp = new Compiler('g++')
 
-async function solve(): Promise<void> {
+async function repl(): Promise<void> {
   const code: string = await read()
   const res = await cp.processInput(code)
   print(res.output, false)
@@ -24,10 +24,14 @@ async function solve(): Promise<void> {
   print(output, false)
 }
 
-async function qwq() {
+async function runRepl() {
   while (1) {
-    await solve()
+    try {
+      await repl()
+    } catch (e) {
+      process.exit(0)
+    }
   }
 }
 
-qwq()
+runRepl()
