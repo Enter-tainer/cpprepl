@@ -13,8 +13,7 @@ const argv = yargs.options({
   }
 }).argv
 
-
-const cp = new Compiler('g++')
+const cp = new Compiler(argv["clang++"] ? 'clang++' : 'g++')
 
 async function repl(): Promise<void> {
   const code: string = await read()

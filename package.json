@@ -22,10 +22,11 @@
     "typescript": "^3.6.4"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "jest",
     "build": "tsc",
     "postbuild": "cp -r template dist/",
-    "prepack": "npm run build"
+    "prepack": "npm run build",
+    "start": "ts-node ."
   },
   "author": "Margatroid",
   "license": "MIT"

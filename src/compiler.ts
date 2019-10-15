@@ -26,20 +26,20 @@ class Compiler {
     const headerpath = join(tmpdir(), 'dbg.h')
     copyFileSync(join('template', 'dbg.h'), headerpath)
   }
-  private static wrapCodeWith(code: string, wrapper: string = 'value_of'): string {
+  static wrapCodeWith(code: string, wrapper: string = 'value_of'): string {
     code = trim(code, ';')
     return `${wrapper}(${code});`
   }
 
-  private static wrapInclude(module: string): string {
+  static wrapInclude(module: string): string {
     return `#include "${module}"`
   }
 
-  private static addSemicolon(code: string): string {
+  static addSemicolon(code: string): string {
     code = trim(code, ';')
     return `${code};`
   }
-  private static concatCode(code: Array<string>, includes: Array<string>): string {
+  static concatCode(code: Array<string>, includes: Array<string>): string {
     let resCode: string = ''
     let resInclude: string = ''
     for (const i of includes) {
@@ -50,7 +50,7 @@ class Compiler {
     }
     return `${resInclude}\nint main () {\n${resCode}\n}`
   }
-  private static async isExist(path: string): Promise<boolean> {
+  static async isExist(path: string): Promise<boolean> {
     try {
       await accessA(join(tmpdir(), 'dbg.h'))
       return true
