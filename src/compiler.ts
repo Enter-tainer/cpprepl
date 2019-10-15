@@ -4,7 +4,7 @@ import { tmpdir } from 'os'
 import { writeFile, copyFile, access, copyFileSync } from 'fs'
 import { join } from 'path'
 import { trim } from 'lodash'
-import getLocalPath from './file'
+import { getLocalPath, getOSExecName } from './file'
 
 const execA = promisify(exec)
 const writeFileA = promisify(writeFile)
@@ -61,7 +61,7 @@ class Compiler {
     let resCode = Compiler.concatCode(code, includes)
     const filepath = join(tmpdir(), 'repl.cxx')
     const headerpath = join(tmpdir(), 'dbg.h')
-    const execPath = join(tmpdir(), 'a.out')
+    const execPath = join(tmpdir(), getOSExecName())
     await writeFileA(filepath, resCode)
     let exec_res: {
       stdout: string;
@@ -69,7 +69,7 @@ class Compiler {
     }
     await copyFileA(await getLocalPath(join('template', 'dbg.h')), headerpath)
     try {
-      exec_res = await execA(`${this.compiler} ${filepath} -o ${execPath}`, { shell: '/bin/bash', windowsHide: true })
+      exec_res = await execA(`${this.compiler} ${filepath} -o ${execPath}`, { windowsHide: true })
       return {
         success: true,
         output: exec_res.stdout
@@ -105,7 +105,7 @@ class Compiler {
           if (compileRes.success) {
             this.includes.push(oprand)
           }
-          return { 
+          return {
             success: compileRes.success,
             output: compileRes.success ? `Load ${oprand} success\n` : `Fail to load ${oprand}\n`
           }
@@ -150,8 +150,8 @@ class Compiler {
   }
 
   async execute(): Promise<string> {
-    const execPath = join(tmpdir(), 'a.out')
-    const res = await execA(execPath, { shell: '/bin/bash', windowsHide: true })
+    const execPath = join(tmpdir(), getOSExecName())
+    const res = await execA(execPath, { windowsHide: true })
     return res.stdout
   }
 }

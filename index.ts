@@ -28,6 +28,7 @@ async function runRepl() {
     try {
       await repl()
     } catch (e) {
+      console.log(e)
       process.exit(0)
     }
   }
