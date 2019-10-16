@@ -1,8 +1,8 @@
-# cpprepl
+# c(pp)repl
 
 ![demo](./img/demo.svg)
 
-a simple cpp repl with ghci style commands
+a simple c/cpp repl with ghci style commands
 
 ## Install
 
@@ -14,13 +14,16 @@ npm i -g cpprepl
 
 ``` bash
 cpprepl --clang++ # use clang++
-cpprepl --g++     # or use g++ for defaults
+cpprepl --g++     # or use g++ for default
+crepl
+crepl --clang
 ```
 
 ## Usage
 
 ```
 cpprepl --help
+crepl -help
 ```
 
 ## Commands
