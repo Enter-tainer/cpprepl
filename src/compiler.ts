@@ -95,10 +95,14 @@ class Compiler {
 
   async command(cmd: string): Promise<execResult> {
     try {
-      const oprand: string = cmd.split(' ')[1]
+      const oprandArr: Array<string> = cmd.split(' ')
+      let oprand: string = ''
+      for (let i = 1; i < oprandArr.length; ++i) {
+        oprand += oprandArr[i]
+      }
       let tmp = [...this.code]
       let r: execResult
-      switch (cmd.split(' ')[0]) {
+      switch (oprandArr[0]) {
         case ':b':
         case ':bin':
           tmp.push(Compiler.wrapCodeWith(oprand, 'mgt::print_bytes'))
@@ -110,6 +114,7 @@ class Compiler {
             success: true,
             output: ''
           }
+
         case ':m':
         case ':module':
           const include: string = oprand
@@ -139,7 +144,7 @@ class Compiler {
     }
     return {
       success: false,
-      output: 'match command failed'
+      output: 'match command failed\n'
     }
   }
 
