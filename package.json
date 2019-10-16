@@ -3,7 +3,7 @@
   "bin": {
     "cpprepl": "dist/index.js"
   },
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "deadly simple repl for cpp",
   "main": "dist/index.js",
   "dependencies": {
