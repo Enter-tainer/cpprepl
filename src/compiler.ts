@@ -98,7 +98,7 @@ class Compiler {
       const oprandArr: Array<string> = cmd.split(' ')
       let oprand: string = ''
       for (let i = 1; i < oprandArr.length; ++i) {
-        oprand += oprandArr[i]
+        oprand += oprandArr[i] + (i == oprandArr.length - 1 ? '' : ' ')
       }
       let tmp = [...this.code]
       let r: execResult
