@@ -25,11 +25,10 @@ License (MIT):
   SOFTWARE.
 
 *****************************************************************************/
-
+#if (defined __GNUG__)
 #include <algorithm>
 #include <bitset>
 #include <cstdint>
-#include <cxxabi.h>
 #include <iomanip>
 #include <iostream>
 #include <string>
@@ -160,3 +159,53 @@ template <typename T> std::string to_string(const vector<T>& vec) {
   return res;
 }
 } // namespace std
+#else
+#include <stdio.h>
+#include <string.h>
+#define type_of(x)                                                             \
+  _Generic((x), \
+    char: "char", \
+    short int: "short int", \
+    unsigned short int: "unsigned short int", \
+    int: "int", \
+    unsigned int: "unsigned int", \
+    long int: "long int", \
+    unsigned long int: "unsigned long int", \
+    long long int: "long long int", \
+    unsigned long long int: "unsigned long long int", \
+    float: "float", \
+    double: "double", \
+    long double: "long double", \
+    void *: "void*")
+
+#define value_of(x)                                                            \
+  {                                                                            \
+    const char* type_of_x = type_of(x);                                        \
+    if (!strcmp(type_of_x, "int")) {                                           \
+      printf(#x " = %d :: %s\n", x, type_of_x);                                \
+    } else if (!strcmp(type_of_x, "char")) {                                   \
+      printf(#x " = '%c' :: %s\n", x, type_of_x);                              \
+    } else if (!strcmp(type_of_x, "short int")) {                              \
+      printf(#x " = %hd :: %s\n", x, type_of_x);                               \
+    } else if (!strcmp(type_of_x, "unsigned short int")) {                     \
+      printf(#x " = %hu :: %s\n", x, type_of_x);                               \
+    } else if (!strcmp(type_of_x, "unsigned int")) {                           \
+      printf(#x " = %u :: %s\n", x, type_of_x);                                \
+    } else if (!strcmp(type_of_x, "long int")) {                               \
+      printf(#x " = %ld :: %s\n", x, type_of_x);                               \
+    } else if (!strcmp(type_of_x, "unsigned long int")) {                      \
+      printf(#x " = %lu :: %s\n", x, type_of_x);                               \
+    } else if (!strcmp(type_of_x, "long long int")) {                          \
+      printf(#x " = %lld :: %s\n", x, type_of_x);                              \
+    } else if (!strcmp(type_of_x, "unsigned long long int")) {                 \
+      printf(#x " = %llu :: %s\n", x, type_of_x);                              \
+    } else if (!strcmp(type_of_x, "float")) {                                  \
+      printf(#x " = %f :: %s\n", x, type_of_x);                                \
+    } else if (!strcmp(type_of_x, "double")) {                                 \
+      printf(#x " = %f :: %s\n", x, type_of_x);                                \
+    } else if (!strcmp(type_of_x, "long double")) {                            \
+      printf(#x " = %Lf :: %s\n", x, type_of_x);                               \
+    }                                                                          \
+  }
+
+#endif
