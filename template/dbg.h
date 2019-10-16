@@ -104,6 +104,39 @@ template <typename T> std::string type_name() {
 inline std::string get_type_name(type_tag<std::string>) {
   return "std::string";
 }
+enum print_base { bin = 2, oct = 8, dec = 10, hex = 16 };
+
+template <typename T> void print_bytes(T val, print_base base = bin) {
+  auto f        = cout.flags();
+  auto p        = reinterpret_cast<uint8_t*>(&val);
+  uint32_t step = sizeof(T);
+  if (base != 2) {
+    vector<uint32_t> res;
+    for (int i = 0; i < step; ++i)
+      res.push_back(p[i]);
+    reverse(res.begin(), res.end());
+    if (base == hex) {
+      for (auto p : res) {
+        cout.width(4);
+        cout.fill(' ');
+        cout << showbase << setbase(base) << left << p << ' ';
+      }
+    } else {
+      for (auto p : res)
+        cout << setbase(base) << p << ' ';
+    }
+  } else {
+    vector<bitset<8>> res;
+    for (int i = 0; i < step; ++i)
+      res.push_back(bitset<8>((uint8_t)p[i]));
+    reverse(res.begin(), res.end());
+    for (auto p : res)
+      cout << p << ' ';
+  }
+  cout << endl;
+  cout.flags(f);
+}
+
 #define value_of(x)                                                            \
   std::cout << (#x + std::string(" = ") + std::to_string(x) +                  \
                 std::string(" :: ") + mgt::type_name<decltype(x)>())           \

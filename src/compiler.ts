@@ -96,7 +96,20 @@ class Compiler {
   async command(cmd: string): Promise<execResult> {
     try {
       const oprand: string = cmd.split(' ')[1]
+      let tmp = [...this.code]
+      let r: execResult
       switch (cmd.split(' ')[0]) {
+        case ':b':
+        case ':bin':
+          tmp.push(Compiler.wrapCodeWith(oprand, 'mgt::print_bytes'))
+          r = await this.basicCompile(tmp, this.includes)
+          return r
+        case ':h':
+        case ':help':
+          return {
+            success: true,
+            output: ''
+          }
         case ':m':
         case ':module':
           const include: string = oprand
@@ -111,12 +124,11 @@ class Compiler {
           }
         case ':t':
         case ':type':
-          let tmp = [...this.code]
           tmp.push(Compiler.wrapCodeWith(oprand, 'type_of'))
-          let r = await this.basicCompile(tmp, this.includes)
+          r = await this.basicCompile(tmp, this.includes)
           return r
-        case ':e':
-        case ':exit':
+        case ':q':
+        case ':quit':
           process.exit(0)
       }
     } catch (e) {
