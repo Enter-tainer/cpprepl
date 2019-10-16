@@ -69,10 +69,10 @@ class Compiler {
     }
     await copyFileA(await getLocalPath(join('template', 'dbg.h')), headerpath)
     try {
-      exec_res = await execA(`${this.compiler} ${filepath} -o ${execPath}`, { windowsHide: true })
+      exec_res = await execA(`${this.compiler} ${filepath} -o ${execPath} -Wparentheses`, { windowsHide: true })
       return {
         success: true,
-        output: exec_res.stdout
+        output: exec_res.stderr + exec_res.stdout
       }
     } catch (e) {
       return {
