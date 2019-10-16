@@ -63,10 +63,10 @@ static constexpr size_t SUFFIX_LENGTH = sizeof(">(void)") - 1;
 #endif
 
 } // namespace pretty_function
-template <typename T> const char *type_name_impl() {
+template <typename T> const char* type_name_impl() {
   return DBG_MACRO_PRETTY_FUNCTION;
 }
-template <int &... ExplicitArgumentBarrier, typename T>
+template <int&... ExplicitArgumentBarrier, typename T>
 std::string get_type_name(type_tag<T>) {
   namespace pf = pretty_function;
 
@@ -104,18 +104,20 @@ template <typename T> std::string type_name() {
 inline std::string get_type_name(type_tag<std::string>) {
   return "std::string";
 }
-#define value_of(x)                                                             \
-  std::cout << (#x + std::string(" = ") + std::to_string(x) + std::string(" :: ") +         \
-   mgt::type_name<decltype(x)>()) << std::endl
+#define value_of(x)                                                            \
+  std::cout << (#x + std::string(" = ") + std::to_string(x) +                  \
+                std::string(" :: ") + mgt::type_name<decltype(x)>())           \
+            << std::endl
 
-#define type_of(x)\
-  std::cout << (#x + std::string(" :: ") + mgt::type_name<decltype(x)>()) << std::endl
+#define type_of(x)                                                             \
+  std::cout << (#x + std::string(" :: ") + mgt::type_name<decltype(x)>())      \
+            << std::endl
 } // namespace mgt
 namespace std {
-std::string to_string(const string &s) { return '"' + s + '"'; }
-template <typename T> std::string to_string(const vector<T> &vec) {
+std::string to_string(const string& s) { return '"' + s + '"'; }
+template <typename T> std::string to_string(const vector<T>& vec) {
   string res = "[";
-  for (auto &i : vec) {
+  for (auto& i : vec) {
     res += to_string(i);
     res += ", ";
   }
@@ -125,4 +127,3 @@ template <typename T> std::string to_string(const vector<T> &vec) {
   return res;
 }
 } // namespace std
-
