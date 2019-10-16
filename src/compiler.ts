@@ -122,9 +122,9 @@ class Compiler {
 
         case ':m':
         case ':module':
-          const include: string = oprand
-          let tmpInclude = [...this.includes].push(oprand)
-          let compileRes = await this.basicCompile(this.code, this.includes)
+          let tmpInclude = [...this.includes]
+          tmpInclude.push(oprand)
+          let compileRes = await this.basicCompile(this.code, tmpInclude)
           if (compileRes.success) {
             this.includes.push(oprand)
           }
