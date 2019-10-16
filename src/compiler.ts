@@ -20,10 +20,15 @@ class Compiler {
   compiler: string
   code: Array<string>
   includes: Array<string>
+  langExt: string
   constructor(compiler: string) {
     this.compiler = compiler
     this.code = []
     this.includes = ['dbg.h']
+    if (this.compiler === 'gcc' || this.compiler === 'clang')
+      this.langExt = 'c'
+    else
+      this.langExt = 'cxx'
   }
   static wrapCodeWith(code: string, wrapper: string = 'value_of'): string {
     code = trim(code, ';')
@@ -59,7 +64,7 @@ class Compiler {
   }
   private async basicCompile(code: Array<string>, includes: Array<string>): Promise<execResult> {
     let resCode = Compiler.concatCode(code, includes)
-    const filepath = join(tmpdir(), 'repl.cxx')
+    const filepath = join(tmpdir(), `repl.${this.langExt}`)
     const headerpath = join(tmpdir(), 'dbg.h')
     const execPath = join(tmpdir(), getOSExecName())
     await writeFileA(filepath, resCode)
@@ -69,10 +74,10 @@ class Compiler {
     }
     await copyFileA(await getLocalPath(join('template', 'dbg.h')), headerpath)
     try {
-      exec_res = await execA(`${this.compiler} ${filepath} -o ${execPath} -Wparentheses -Wno-unused`, { windowsHide: true })
+      exec_res = await execA(`${this.compiler} -w ${filepath} -o ${execPath}`, { windowsHide: true })
       return {
         success: true,
-        output: exec_res.stderr + exec_res.stdout
+        output: exec_res.stderr
       }
     } catch (e) {
       return {

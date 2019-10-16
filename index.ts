@@ -10,10 +10,23 @@ const argv = yargs.options({
   },
   'g++': {
     type: 'boolean',
+  },
+  'gcc': {
+    type: 'boolean',
+  },
+  'clang': {
+    type: 'boolean',
   }
 }).argv
 
-const cp = new Compiler(argv["clang++"] ? 'clang++' : 'g++')
+let compilerName = 'g++'
+
+if (argv.gcc || argv.clang)
+  compilerName = argv.gcc ? 'gcc' : 'clang'
+if (argv["clang++"] || argv["g++"])
+  compilerName = argv["g++"] ? 'g++' : 'clang++'
+
+const cp = new Compiler(compilerName)
 
 async function repl(): Promise<void> {
   const code: string = await read()
