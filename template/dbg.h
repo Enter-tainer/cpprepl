@@ -217,7 +217,7 @@ using mgt::print_bytes;
     typeof(x) y = x;                                                           \
     char* ptr   = (char*)(void*)&y;                                            \
     char buffer[150];                                                          \
-    for (int i = 0; i < 129; ++i)                                              \
+    for (int i = 0; i < 150; ++i)                                              \
       buffer[i] = 0;                                                           \
     char* h        = buffer;                                                   \
     unsigned int p = 1;                                                        \
