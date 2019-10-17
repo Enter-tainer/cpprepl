@@ -232,7 +232,7 @@ using mgt::print_bytes;
       ;                                                                        \
     for (int i = 0, j = len - 1, tmp; i < j; ++i, --j)                         \
       tmp = buffer[i], buffer[i] = buffer[j], buffer[j] = tmp;                 \
-    puts(buffer + 1);                                                              \
+    puts(buffer + 1);                                                          \
   }
 
 #endif
