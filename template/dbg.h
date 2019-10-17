@@ -103,18 +103,17 @@ template <typename T> std::string type_name() {
 inline std::string get_type_name(type_tag<std::string>) {
   return "std::string";
 }
-enum print_base { bin = 2, oct = 8, dec = 10, hex = 16 };
-
-template <typename T> void print_bytes(T val, print_base base = bin) {
+template <typename T> void print_bytes(T val) {
   auto f        = cout.flags();
   auto p        = reinterpret_cast<uint8_t*>(&val);
+  int base      = 2;
   uint32_t step = sizeof(T);
   if (base != 2) {
     vector<uint32_t> res;
     for (int i = 0; i < step; ++i)
       res.push_back(p[i]);
     reverse(res.begin(), res.end());
-    if (base == hex) {
+    if (base == 16) {
       for (auto p : res) {
         cout.width(4);
         cout.fill(' ');
@@ -159,10 +158,12 @@ template <typename T> std::string to_string(const vector<T>& vec) {
   return res;
 }
 } // namespace std
+using mgt::print_bytes;
 #else
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
-#define type_of(x)                                                             \
+#define type_name(x)                                                           \
   _Generic((x), \
     char: "char", \
     short int: "short int", \
@@ -180,7 +181,7 @@ template <typename T> std::string to_string(const vector<T>& vec) {
 
 #define value_of(x)                                                            \
   {                                                                            \
-    const char* type_of_x = type_of(x);                                        \
+    const char* type_of_x = type_name(x);                                      \
     if (!strcmp(type_of_x, "int")) {                                           \
       printf(#x " = %d :: %s\n", x, type_of_x);                                \
     } else if (!strcmp(type_of_x, "char")) {                                   \
@@ -206,6 +207,32 @@ template <typename T> std::string to_string(const vector<T>& vec) {
     } else if (!strcmp(type_of_x, "long double")) {                            \
       printf(#x " = %Lf :: %s\n", x, type_of_x);                               \
     }                                                                          \
+  }
+#define type_of(x) printf(#x " :: %s\n", type_name(x))
+
+#define print_bytes(x)                                                         \
+  {                                                                            \
+    int len = sizeof(x);                                                       \
+                                                                               \
+    typeof(x) y = x;                                                           \
+    char* ptr   = (char*)(void*)&y;                                            \
+    char buffer[150];                                                          \
+    for (int i = 0; i < 129; ++i)                                              \
+      buffer[i] = 0;                                                           \
+    char* h        = buffer;                                                   \
+    unsigned int p = 1;                                                        \
+    for (int i = 0; i < len; ++i, ++ptr) {                                     \
+      for (int j = 0; j < 8; ++j, p <<= 1, ++h) {                              \
+        *h = p & *ptr ? '1' : '0';                                             \
+      }                                                                        \
+      p    = 1;                                                                \
+      *h++ = ' ';                                                              \
+    }                                                                          \
+    for (len = 0; buffer[len]; ++len)                                          \
+      ;                                                                        \
+    for (int i = 0, j = len - 1, tmp; i < j; ++i, --j)                         \
+      tmp = buffer[i], buffer[i] = buffer[j], buffer[j] = tmp;                 \
+    puts(buffer + 1);                                                              \
   }
 
 #endif

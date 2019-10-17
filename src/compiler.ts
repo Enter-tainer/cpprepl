@@ -110,7 +110,7 @@ class Compiler {
       switch (oprandArr[0]) {
         case ':b':
         case ':bin':
-          tmp.push(Compiler.wrapCodeWith(oprand, 'mgt::print_bytes'))
+          tmp.push(Compiler.wrapCodeWith(oprand, 'print_bytes'))
           r = await this.basicCompile(tmp, this.includes)
           return r
         case ':h':
