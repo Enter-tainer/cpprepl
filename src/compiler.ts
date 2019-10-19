@@ -74,7 +74,7 @@ class Compiler {
     }
     await copyFileA(await getLocalPath(join('template', 'dbg.h')), headerpath)
     try {
-      exec_res = await execA(`${this.compiler} -w ${filepath} -o ${execPath}`, { windowsHide: true })
+      exec_res = await execA(`${this.compiler} -w ${filepath} -fdiagnostics-color -o ${execPath}`, { windowsHide: true })
       return {
         success: true,
         output: exec_res.stderr
