@@ -15,7 +15,7 @@ const argv = yargs.options({
 
 let compilerName = 'gcc'
 
-if (argv["clang++"] || argv["g++"])
+if (argv["clang"] || argv["gcc"])
   compilerName = argv["gcc"] ? 'gcc' : 'clang'
 
 runRepl(new Compiler(compilerName))
