@@ -135,21 +135,27 @@ template <typename T> void print_bytes(T val) {
   cout.flags(f);
 }
 
-#define value_of(x)                                                            \
-  std::cout << (#x + std::string(" = ") + std::to_string(x) +                  \
-                std::string(" :: ") + mgt::type_name<decltype(x)>())           \
-            << std::endl
+template <typename, typename = void> struct is_stl : std::false_type {};
 
-#define type_of(x)                                                             \
-  std::cout << (#x + std::string(" :: ") + mgt::type_name<decltype(x)>())      \
-            << std::endl
-} // namespace mgt
-namespace std {
+template <typename T>
+struct is_stl<T, std::void_t<decltype(std::declval<T>().begin(),
+                                      std::declval<T>().end())>>
+    : std::true_type {};
+
 std::string to_string(const string& s) { return '"' + s + '"'; }
-template <typename T> std::string to_string(const vector<T>& vec) {
+
+template <typename T>
+typename std::enable_if<!is_stl<T>::value, std::string>::type
+to_string(const T& v) {
+  return std::to_string(v);
+}
+
+template <typename T>
+typename std::enable_if<is_stl<T>::value, std::string>::type
+to_string(const T& vec) {
   string res = "[";
   for (auto& i : vec) {
-    res += to_string(i);
+    res += mgt::to_string(i);
     res += ", ";
   }
   if (!res.empty())
@@ -157,7 +163,16 @@ template <typename T> std::string to_string(const vector<T>& vec) {
   res += ']';
   return res;
 }
-} // namespace std
+
+#define value_of(x)                                                            \
+  std::cout << (#x + std::string(" = ") + mgt::to_string(x) +                  \
+                std::string(" :: ") + mgt::type_name<decltype(x)>())           \
+            << std::endl
+
+#define type_of(x)                                                             \
+  std::cout << (#x + std::string(" :: ") + mgt::type_name<decltype(x)>())      \
+            << std::endl
+} // namespace mgt
 using mgt::print_bytes;
 #else
 #include <stdio.h>
