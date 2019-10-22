@@ -142,17 +142,18 @@ struct is_stl<T, std::void_t<decltype(std::declval<T>().begin(),
                                       std::declval<T>().end())>>
     : std::true_type {};
 
+template <typename T, typename U>
+using stl = typename std::enable_if<is_stl<T>::value, U>::type;
+template <typename T, typename U>
+using nonstl = typename std::enable_if<!is_stl<T>::value, U>::type;
+
 std::string to_string(const string& s) { return '"' + s + '"'; }
 
-template <typename T>
-typename std::enable_if<!is_stl<T>::value, std::string>::type
-to_string(const T& v) {
+template <typename T> nonstl<T, std::string> to_string(const T& v) {
   return std::to_string(v);
 }
 
-template <typename T>
-typename std::enable_if<is_stl<T>::value, std::string>::type
-to_string(const T& vec) {
+template <typename T> stl<T, std::string> to_string(const T& vec) {
   string res = "[";
   for (auto& i : vec) {
     res += mgt::to_string(i);
