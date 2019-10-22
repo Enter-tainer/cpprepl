@@ -36,7 +36,6 @@ License (MIT):
 #include <vector>
 using namespace std;
 namespace mgt {
-template <typename T> struct type_tag {};
 namespace pretty_function {
 
 // Compiler-agnostic version of __PRETTY_FUNCTION__ and constants to
@@ -65,8 +64,8 @@ static constexpr size_t SUFFIX_LENGTH = sizeof(">(void)") - 1;
 template <typename T> const char* type_name_impl() {
   return DBG_MACRO_PRETTY_FUNCTION;
 }
-template <int&... ExplicitArgumentBarrier, typename T>
-std::string get_type_name(type_tag<T>) {
+template <typename T>
+std::string get_type_name() {
   namespace pf = pretty_function;
 
   std::string type = type_name_impl<T>();
@@ -98,9 +97,10 @@ template <typename T> std::string type_name() {
   if (std::is_rvalue_reference<T>::value) {
     return type_name<typename std::remove_reference<T>::type>() + "&&";
   }
-  return get_type_name(type_tag<T>{});
+  return get_type_name<T>();
 }
-inline std::string get_type_name(type_tag<std::string>) {
+template <>
+std::string get_type_name<std::string>() {
   return "std::string";
 }
 template <typename T> void print_bytes(T val) {
