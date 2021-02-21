@@ -73,8 +73,13 @@ class Compiler {
       stderr: string;
     }
     await copyFileA(await getLocalPath(join('template', 'dbg.h')), headerpath)
+    let cxx17;
+    if (this.langExt == 'cxx') {
+      cxx17 = '-std=c++17'
+    }
     try {
-      exec_res = await execA(`${this.compiler} -w ${filepath} -fdiagnostics-color -o ${execPath}`, { windowsHide: true })
+      const execCommand = `${this.compiler} -w ${filepath} ${cxx17} -fdiagnostics-color -o ${execPath}`
+      exec_res = await execA(execCommand, { windowsHide: true })
       return {
         success: true,
         output: exec_res.stderr
