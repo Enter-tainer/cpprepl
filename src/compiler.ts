@@ -73,7 +73,7 @@ class Compiler {
       stderr: string;
     }
     await copyFileA(await getLocalPath(join('template', 'dbg.h')), headerpath)
-    let cxx17;
+    let cxx17 = '';
     if (this.langExt == 'cxx') {
       cxx17 = '-std=c++17'
     }
