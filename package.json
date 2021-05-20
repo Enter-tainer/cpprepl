@@ -4,14 +4,14 @@
     "cpprepl": "dist/index.cpp.js",
     "crepl": "dist/index.c.js"
   },
-  "version": "1.2.5",
+  "version": "1.2.6",
   "description": "deadly simple repl for cpp",
   "main": "dist/index.js",
   "dependencies": {
     "@types/lodash": "^4.14.144",
     "detect-installed": "^2.0.4",
-    "enquirer": "^2.3.2",
     "get-installed-path": "^4.0.8",
+    "inquirer": "^8.0.0",
     "lodash": "^4.17.15",
     "yargs": "^14.2.0"
   },

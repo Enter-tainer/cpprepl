@@ -135,6 +135,28 @@ template <typename T> void print_bytes(T val) {
   cout.flags(f);
 }
 
+template <typename T> void print_hex(T val) {
+  auto f        = cout.flags();
+  auto p        = reinterpret_cast<uint8_t*>(&val);
+  int base      = 16;
+  uint32_t step = sizeof(T);
+  if (base != 2) {
+    vector<uint32_t> res;
+    for (int i = 0; i < step; ++i)
+      res.push_back(p[i]);
+    reverse(res.begin(), res.end());
+    if (base == 16) {
+      for (auto p : res) {
+        cout.width(4);
+        cout.fill(' ');
+        cout << showbase << setbase(base) << left << p << ' ';
+      }
+    } 
+  }
+  cout << endl;
+  cout.flags(f);
+}
+
 template <typename, typename = void> struct is_stl : std::false_type {};
 
 template <typename T>
@@ -175,6 +197,7 @@ template <typename T> stl<T, std::string> to_string(const T& vec) {
             << std::endl
 } // namespace mgt
 using mgt::print_bytes;
+using mgt::print_hex;
 #else
 #include <stdio.h>
 #include <stdlib.h>

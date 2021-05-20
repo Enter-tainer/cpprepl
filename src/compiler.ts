@@ -118,6 +118,11 @@ class Compiler {
           tmp.push(Compiler.wrapCodeWith(oprand, 'print_bytes'))
           r = await this.basicCompile(tmp, this.includes)
           return r
+        case ':x':
+        case ':hex':
+          tmp.push(Compiler.wrapCodeWith(oprand, 'print_hex'))
+          r = await this.basicCompile(tmp, this.includes)
+          return r
         case ':h':
         case ':help':
           return {

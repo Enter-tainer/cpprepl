@@ -1,4 +1,5 @@
-import { prompt } from 'enquirer'
+const inquirer = require('inquirer');
+
 import { stdout } from 'process'
 
 function print(str: string, newline: boolean = true) {
@@ -6,7 +7,7 @@ function print(str: string, newline: boolean = true) {
 }
 
 async function read(): Promise<string> {
-  const res: {value: string} = await prompt({
+  const res: { value: string } = await inquirer.prompt({
     message: '>>=',
     type: 'input',
     name: 'value'
